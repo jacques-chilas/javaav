@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: postgres:16.3-alpine3.20
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: chilas456
+      POSTGRES_PASSWORD: Jacquessylla-0
+      POSTGRES_DB: dbjavaav
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ~/Projects/docker/volumes/pgdata:/var/lib/postgresql/data  # Host directory for persistent storage
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "chilas456", "-d", "dbjavaav"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  pgadmin:
+    image: pgadmin4:latest
+    container_name: pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jacqueschilas@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: Jacquessylla-0
+      PGADMIN_SERVER_JSON_FILE: /var/lib/pgadmin/servers.json
+      PGADMIN_PREFERENCES_JSON_FILE: /var/lib/pgadmin/preferences.json
+    volumes:
+      - ~/Projects/docker/volumes/pgadmin:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
